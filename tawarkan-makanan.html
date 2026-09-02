@@ -32,7 +32,7 @@ Tawarkan makanan
 <p>
 Gunakan data fiktif selama praktikum. Jangan menawarkan makanan yang rusak, kedaluwarsa, tercemar, atau tidak aman dikonsumsi.
 </p>
-<p id="petunjuk-wajib">Kolom bertanda <strong> *< /strong> wajib diisi .< /p>
+<p id="petunjuk-wajib">Kolom bertanda <strong> * wajib diisi .< /p>
 
 <form
 action="tawarkan-makanan.html"
@@ -43,7 +43,7 @@ aria-describedby="petunjuk-wajib"
 <legend>Identitas makanan</legend>
 
 <p>
-<label for="nama-makanan">Nama makanan *< /label><br>
+<label for="nama-makanan">Nama makanan <br>
 <input
 type="text"
 id="nama-makanan"
@@ -53,12 +53,11 @@ maxlength="120"
 required
 >
 
-A
 
 </p>
 
 <p>
-<label for="kategori">Kategori *< /label><br>
+<label for="kategori">Kategori <br>
 <select id="kategori" name="kategori" required>
 <option value="">Pilih kategori</option>
 <option value="makanan-siap-saji">Makanan siap saji</option>
@@ -71,7 +70,7 @@ A
 </p>
 
 <p>
-<label for="deskripsi-makanan">Deskripsi kondisi makanan *< /label><br>
+<label for="deskripsi-makanan">Deskripsi kondisi makanan <br>
 <textarea
 id="deskripsi-makanan"
 name="deskripsi_makanan"
@@ -91,7 +90,7 @@ Jelaskan isi, kondisi, waktu produksi, dan alasan menjadi stok berlebih.
 <legend>Jumlah dan skema pemulihan nilai</legend>
 
 <p>
-<label for="jumlah">Jumlah tersedia *< /label><br>
+<label for="jumlah">Jumlah tersedia <br>
 <input
 type="number"
 id="jumlah"
@@ -104,7 +103,7 @@ required
 </p>
 
 <p>
-<label for="satuan">Satuan *< /label><br>
+<label for="satuan">Satuan <br>
 <select id="satuan" name="satuan" required>
 <option value="">Pilih satuan</option>
 <option value="porsi">Porsi</option>
@@ -116,7 +115,7 @@ required
 </p>
 
 <p>
-<label for="harga-normal">Harga normal per satuan (rupiah) *< /label><br>
+<label for="harga-normal">Harga normal per satuan (rupiah) <br>
 <input
 type="number"
 id="harga-normal"
@@ -129,7 +128,7 @@ required
 </p>
 
 <fieldset>
-<legend>Jenis penawaran *< /legend>
+<legend>Jenis penawaran 
 <p>
 <input type="radio"
 id="jenis-diskon"
@@ -151,7 +150,7 @@ value="donasi"
 </fieldset>
 
 <p>
-<label for="harga-pemulihan">Harga penawaran per satuan (rupiah) *< /label><br>
+<label for="harga-pemulihan">Harga penawaran per satuan (rupiah) <br>
 <input
 type="number"
 id="harga-pemulihan"
@@ -172,7 +171,7 @@ Isi 0 jika makanan disalurkan tanpa biaya. Perbandingan dengan harga normal akan
 <legend>Keamanan dan pengambilan</legend>
 
 <p>
-<label for="batas-pengambilan">Batas waktu pengambilan *< /label><br>
+<label for="batas-pengambilan">Batas waktu pengambilan<br>
 <input
 type="datetime-local"
 id="batas-pengambilan"
@@ -182,7 +181,7 @@ required
 </p>
 
 <p>
-<label for="petunjuk-penyimpanan">Petunjuk penyimpanan *< /label><br>
+<label for="petunjuk-penyimpanan">Petunjuk penyimpanan <br>
 <textarea
 id="petunjuk-penyimpanan"
 name="petunjuk_penyimpanan"
@@ -213,7 +212,7 @@ required
 </fieldset>
 
 <p>
-<label for="lokasi-pengambilan">Lokasi pengambilan *< /label><br>
+<label for="lokasi-pengambilan">Lokasi pengambilan <br>
 <textarea
 id="lokasi-pengambilan"
 name="lokasi_pengambilan"
@@ -238,7 +237,7 @@ required
 >
 <label for="konfirmasi-keamanan">
 Saya memastikan contoh makanan ini masih layak konsumsi dan
-informasi kondisi serta alergennya telah ditulis dengan jujur. *
+informasi kondisi serta alergennya telah ditulis dengan jujur.
 </label>
 </p>
 </fieldset>
@@ -250,18 +249,12 @@ informasi kondisi serta alergennya telah ditulis dengan jujur. *
 </form>
 
 <section aria-labelledby="batas-validasi-html">
-<h2 id="batas-validasi-html">Batas validasi pada tahap HTML</h2>
-<p>
-Atribut HTML dapat memeriksa isian wajib, format dasar, dan rentang
-angka. Namun, HTML belum dapat memastikan harga penawaran lebih kecil
-daripada harga normal atau batas pengambilan berada di masa depan.
-Aturan lintas-kolom tersebut akan ditambahkan dengan JavaScript dan
-tetap diperiksa ulang pada server.
+<h2 id="batas-validasi-html">
 </p>
 </section>
 </main>
 <footer>
-<p>&copy; 2026 SisaBaik - Proyek pembelajaran Pengembangan Web .< /p>
+<p>&copy; 2026 SisaBaik - Proyek pembelajaran Pengembangan Web.
 </footer>
 </body>
 </html>
