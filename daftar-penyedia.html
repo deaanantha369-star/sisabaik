@@ -1,4 +1,4 @@
-<! doctype html>
+<!doctype html>
 <html lang="id">
 <head>
 <meta charset="utf-8">
@@ -34,39 +34,37 @@ Gunakan data fiktif selama praktikum. Formulir ini belum terhubung ke>
 
 server dan basis data.
 </p>
-<p id="petunjuk-wajib">Kolom bertanda <strong> <  wajib diisi ></wajib>
+<p id="petunjuk-wajib">Kolom bertanda <strong> * </strong> wajib diisi.</p>
 
 <form
 action="daftar-penyedia.html"
 method="get"
-aria-describedby="petunjuk-wajib"
+aria-describedby="petunjuk-wajib">
 
 <fieldset>
 <legend>Informasi usaha</legend>
 
 <p>
-<label for="nama-usaha">Nama usaha <br>
+<label for="nama-usaha">Nama usaha * </label> <br>
 <input
 type="text"
 id="nama-usaha"
 name="nama_usaha"
 autocomplete="organization"
 minlength="3"
-maxlength="100"
-required
+maxlength="100" 
+required >
 
 </p>
 
 <p>
-<label for="jenis-usaha">Jenis usaha <br>
+<label for="jenis-usaha">Jenis usaha * </label><br>
 <select id="jenis-usaha" name="jenis_usaha" required>
 <option value="">Pilih jenis usaha</option>
 <option value="restoran">Restoran</option>
 <option value="toko-roti">Toko roti</option>
 <option value="katering">Katering</option>
 <option value="ritel">Toko ritel</option>
-
->
 <option value="hotel">Hotel atau penginapan</option>
 <option value="lainnya">Lainnya</option>
 </select>
@@ -91,7 +89,7 @@ Jelaskan jenis produk dan jam operasional, maksimal 500 karakter.
 <legend>Penanggung jawab</legend>
 
 <p>
-<label for="nama-penanggung-jawab">Nama lengkap <br>
+<label for="nama-penanggung-jawab">Nama lengkap * </label><br>
 <input
 type="text"
 id="nama-penanggung-jawab"
@@ -104,7 +102,7 @@ required >
 </p>
 
 <p>
-<label for="email">Alamat email <br>
+<label for="email">Alamat email *</label><br>
 <input
 type="email"
 id="email"
@@ -113,22 +111,22 @@ autocomplete="email"
 maxlength="254"
 aria-describedby="bantuan-email"
 required
-><br>
+>
 <small id="bantuan-email">Contoh: nama@usaha.example</small>
 </p>
 
 <p>
-<label for="telepon">Nomor telepon <br>
+<label for="telepon">Nomor telepon * </label><br>
 <input
 type="tel"
 id="telepon"
 name="telepon"
 autocomplete="tel"
 inputmode="tel"
-pattern="[0-9+() ]{8,20}"
+pattern="[0-9+]{8,20}"
 aria-describedby="bantuan-telepon"
 required
-><br>
+>
 <small id="bantuan-telepon">
 Gunakan 8-20 karakter berupa angka, spasi, +, atau tanda kurung.
 </small>
@@ -139,7 +137,7 @@ Gunakan 8-20 karakter berupa angka, spasi, +, atau tanda kurung.
 <legend>Lokasi usaha</legend>
 
 <p>
-<label for="alamat">Alamat lengkap <br>
+<label for="alamat">Alamat lengkap *</label><br>
 <textarea
 id="alamat"
 name="alamat"
@@ -152,7 +150,7 @@ required
 </p>
 
 <p>
-<label for="kota">Kabupaten atau kota <br>
+<label for="kota">Kabupaten atau kota *</label><br>
 <input
 type="text"
 id="kota"
@@ -164,7 +162,7 @@ required
 </p>
 
 <p>
-<label for="provinsi">Provinsi <br>
+<label for="provinsi">Provinsi * </label><br>
 <input
 
 type="text"
@@ -173,11 +171,11 @@ name="provinsi"
 autocomplete="address-level1"
 maxlength="100"
 required
-
+>
 </p>
 
 <p>
-<label for="kode-pos">Kode pos <br>
+<label for="kode-pos">Kode pos * </label><br>
 <input
 type="text"
 id="kode-pos"
@@ -216,7 +214,7 @@ data pribadi atau data usaha yang sebenarnya. *
 </form>
 
 <section aria-labelledby="catatan-prototipe">
-<h2 id="catatan-prototipe">
+<h2 id="catatan-prototipe">Catatan Prototipe</h2>
 </section>
 </main>
 

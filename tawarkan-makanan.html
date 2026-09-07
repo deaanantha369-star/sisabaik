@@ -1,4 +1,4 @@
-<! doctype html>
+<!doctype html>
 <html lang="id">
 <head>
 <meta charset="utf-8">
@@ -32,32 +32,31 @@ Tawarkan makanan
 <p>
 Gunakan data fiktif selama praktikum. Jangan menawarkan makanan yang rusak, kedaluwarsa, tercemar, atau tidak aman dikonsumsi.
 </p>
-<p id="petunjuk-wajib">Kolom bertanda <strong> * wajib diisi .< /p>
+<p id="petunjuk-wajib">Kolom bertanda <strong> *</strong> diisi .</p>
 
 <form
 action="tawarkan-makanan.html"
 method="get"
 aria-describedby="petunjuk-wajib"
+>
 
 <fieldset>
 <legend>Identitas makanan</legend>
 
 <p>
-<label for="nama-makanan">Nama makanan <br>
+<label for="nama-makanan">Nama makanan * </label><br>
 <input
 type="text"
 id="nama-makanan"
 name="nama_makanan"
 minlength="3"
 maxlength="120"
-required
+required 
 >
-
-
 </p>
 
 <p>
-<label for="kategori">Kategori <br>
+<label for="kategori">Kategori * </label><br>
 <select id="kategori" name="kategori" required>
 <option value="">Pilih kategori</option>
 <option value="makanan-siap-saji">Makanan siap saji</option>
@@ -70,7 +69,7 @@ required
 </p>
 
 <p>
-<label for="deskripsi-makanan">Deskripsi kondisi makanan <br>
+<label for="deskripsi-makanan">Deskripsi kondisi makanan * </label><br>
 <textarea
 id="deskripsi-makanan"
 name="deskripsi_makanan"
@@ -90,7 +89,7 @@ Jelaskan isi, kondisi, waktu produksi, dan alasan menjadi stok berlebih.
 <legend>Jumlah dan skema pemulihan nilai</legend>
 
 <p>
-<label for="jumlah">Jumlah tersedia <br>
+<label for="jumlah">Jumlah tersedia * </label><br>
 <input
 type="number"
 id="jumlah"
@@ -103,7 +102,7 @@ required
 </p>
 
 <p>
-<label for="satuan">Satuan <br>
+<label for="satuan">Satuan * </label><br>
 <select id="satuan" name="satuan" required>
 <option value="">Pilih satuan</option>
 <option value="porsi">Porsi</option>
@@ -115,7 +114,7 @@ required
 </p>
 
 <p>
-<label for="harga-normal">Harga normal per satuan (rupiah) <br>
+<label for="harga-normal">Harga normal per satuan (rupiah) *</label><br>
 <input
 type="number"
 id="harga-normal"
@@ -128,7 +127,7 @@ required
 </p>
 
 <fieldset>
-<legend>Jenis penawaran 
+<legend>Jenis penawaran * </legend>
 <p>
 <input type="radio"
 id="jenis-diskon"
@@ -150,7 +149,7 @@ value="donasi"
 </fieldset>
 
 <p>
-<label for="harga-pemulihan">Harga penawaran per satuan (rupiah) <br>
+<label for="harga-pemulihan">Harga penawaran per satuan (rupiah) * </label><br>
 <input
 type="number"
 id="harga-pemulihan"
@@ -171,7 +170,7 @@ Isi 0 jika makanan disalurkan tanpa biaya. Perbandingan dengan harga normal akan
 <legend>Keamanan dan pengambilan</legend>
 
 <p>
-<label for="batas-pengambilan">Batas waktu pengambilan<br>
+<label for="batas-pengambilan">Batas waktu pengambilan * </label><br>
 <input
 type="datetime-local"
 id="batas-pengambilan"
@@ -181,7 +180,7 @@ required
 </p>
 
 <p>
-<label for="petunjuk-penyimpanan">Petunjuk penyimpanan <br>
+<label for="petunjuk-penyimpanan">Petunjuk penyimpanan * </label><br>
 <textarea
 id="petunjuk-penyimpanan"
 name="petunjuk_penyimpanan"
@@ -194,7 +193,8 @@ required
 
 <fieldset>
 <legend>Informasi alergen yang diketahui</legend>
-<p> <input type="checkbox" id="alergen-gluten" name="alergen" value="gluten">
+<p> 
+    <input type="checkbox" id="alergen-gluten" name="alergen" value="gluten">
 <label for="alergen-gluten">Gluten</label>
 </p>
 <p>
@@ -212,7 +212,7 @@ required
 </fieldset>
 
 <p>
-<label for="lokasi-pengambilan">Lokasi pengambilan <br>
+<label for="lokasi-pengambilan">Lokasi pengambilan * </label><br>
 <textarea
 id="lokasi-pengambilan"
 name="lokasi_pengambilan"
@@ -249,10 +249,14 @@ informasi kondisi serta alergennya telah ditulis dengan jujur.
 </form>
 
 <section aria-labelledby="batas-validasi-html">
-<h2 id="batas-validasi-html">
+<h2 id="batas-validasi-html"> Batas validasi HTML</h2>
+<p>
+    Atribut HTML dapat memeriksa isian wajib, format dasar, dan rentang angka. Namun, HTML belum dapat memastikan harga penawaran lebih kecil daripada harga normal atau batas pengambilan bberada di masa depan. 
+    Aturan lintas-kolom tersebut akan ditambahkan dengan JavaScript dan tetap diperiksa ulang pada server.
 </p>
 </section>
 </main>
+
 <footer>
 <p>&copy; 2026 SisaBaik - Proyek pembelajaran Pengembangan Web.
 </footer>
