@@ -1,12 +1,12 @@
 :root {
-  --color-primary: #176b4d;
-  --color-primary-dark: #0f4f39;
+  --color-primary: #ef9f00;
+  --color-primary-dark: #ffde0b;
   --color-primary-soft: #e8f5ef;
-  --color-accent: #f2b84b;
+  --color-accent: #f8a305;
   --color-text: #17211b;
   --color-muted: #52615a;
   --color-surface: #ffffff;
-  --color-background: #f5f8f6;
+  --color-background: #ace8f7;
   --color-border: #cbd8d1;
   --color-danger: #a52a2a;
   --shadow-card: 0 0.5rem 1.5rem rgb(23 33 27 / 10%);
@@ -141,7 +141,7 @@ a:hover {
 .hero {
   padding-block: clamp(3rem, 10vw, 7rem);
   background:
-    linear-gradient(135deg, rgb(232 245 239 / 95%), rgb(255 255 255 / 92%));
+    linear-gradient(135deg, rgba(247, 250, 249, 0.95), rgb(255 255 255 / 92%));
 }
 
 .hero-layout {
@@ -430,5 +430,41 @@ input[type="radio"] {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+}
+
+.filter-panel
+{
+  display:grid;
+  gap:1rem;
+  margin-block:1.5rem 0;
+  padding:1rem;
+  border:0.0625rem solid var(--color-border);
+  border-radius:var(--radius-medium);
+  background:var(--color-surface); 
+}
+.filter-panel p
+{
+  margin:0;
+}
+.status-message 
+{
+  min-height:1.6em; color:var(--color-muted); 
+}
+.cart-summary
+{
+  margin-block-start:1.5rem;
+padding:1rem;
+border-radius:var(--radius-medium);
+background:var(--color-primary-soft);
+}
+.error-message
+{
+  color:var(--color-danger); font-weight:700; 
+}
+@media (min-width: 48rem) {
+  .filter-panel
+  {
+    grid-template-columns:repeat(2, minmax(0, 1fr));
   }
 }
