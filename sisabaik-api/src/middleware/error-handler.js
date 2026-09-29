@@ -4,11 +4,24 @@ export function tanganiError(error, req, res, next) {
     if (res.headersSent) return next(error);
 
     const status = Number.isInteger(error.status) ? error.status : 500;
-    res.status(status).json({
+
+    if (error instanceof SyntaxError && error.status === 400 && "body" in error) {
+         return res.status(400).json({
         success: false,
         error: {
-        code: error.code || "INTERNAL_SERVER_ERROR",
-        mesage: status === 500 ? "Terjadi kesalahan pada sevrver." : error.message
+            code: "INVALID_JSON",
+            message: "Format JSON tidak valid."
+        }
+     });
+    }
+
+    res.status(status).json({
+        success: false,
+        error:{
+            code: error.code || "INTERNAL_SERVER_ERROR",
+            message: status === 500
+            ? "Terjadi kesalahan pada server."
+            : error.message
         }
     });
 }

@@ -4,6 +4,14 @@ import { penawaran, pesanan } from "../data/store.js";
 
 const router = Router();
 
+router.get("/", (req, res) => {
+    res.status(200).json({
+        success: true,
+        data: pesanan,
+        meta: { jumlah: pesanan.length}
+    });
+});
+
 router.post("/", (req, res) => {
     const { namaPemesan, items } = req.body;
 
