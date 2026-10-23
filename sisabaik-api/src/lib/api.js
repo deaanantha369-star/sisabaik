@@ -14,25 +14,34 @@ export function idValid(nilai, nama = "id") {
   if (typeof nilai === "number" && !Number.isSafeInteger(nilai)) {
     salah(`${nama} harus integer yang aman atau string digit.`);
   }
+
   if (!["string", "number"].includes(typeof nilai)) {
     salah(`${nama} wajib berupa ID positif.`);
   }
+
   const teks = String(nilai);
+
   if (
     !/^[1-9][0-9]{0,18}$/.test(teks) ||
     BigInt(teks) > 9223372036854775807n
   ) {
     salah(`${nama} tidak valid.`);
   }
+
   return teks;
 }
 
 export function teksValid(nilai, nama, min, max) {
-  if (typeof nilai !== "string") salah(`${nama} wajib berupa teks.`);
+  if (typeof nilai !== "string") {
+    salah(`${nama} wajib berupa teks.`);
+  }
+
   const teks = nilai.trim();
+
   if (teks.length < min || teks.length > max) {
     salah(`${nama} harus ${min}-${max} karakter.`);
   }
+
   return teks;
 }
 
@@ -40,6 +49,7 @@ export function angkaValid(nilai, nama, min, max) {
   if (!Number.isSafeInteger(nilai) || nilai < min || nilai > max) {
     salah(`${nama} wajib berupa integer ${min}-${max}.`);
   }
+
   return nilai;
 }
 
@@ -47,6 +57,7 @@ export function objekValid(body, kolom) {
   if (!body || typeof body !== "object" || Array.isArray(body)) {
     salah("Body wajib berupa object JSON.");
   }
+
   if (Object.keys(body).some((k) => !kolom.includes(k))) {
     salah("Body mengandung kolom yang tidak didukung.");
   }
@@ -55,9 +66,11 @@ export function objekValid(body, kolom) {
 export function halamanValid(query) {
   const baca = (nama, awal, max) => {
     const nilai = query[nama] ?? String(awal);
+
     if (typeof nilai !== "string" || !/^[1-9][0-9]*$/.test(nilai)) {
       salah(`${nama} wajib integer positif; jangan kirim berulang.`);
     }
+
     return angkaValid(Number(nilai), nama, 1, max);
   };
 
