@@ -1,374 +1,188 @@
-﻿<script setup>
-import { computed, nextTick, onMounted, onUnmounted, ref } from "vue";
-import FilterPenawaran from "./components/FilterPenawaran.vue";
-import KartuPenawaran from "./components/KartuPenawaran.vue";
-import FormPenawaran from "./components/FormPenawaran.vue";
+<script setup>
+import { ref, watch, nextTick } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { api } from "./lib/api.js";
+import { sesi, hapusSesi, tandaiKeluar } from "./lib/sesi.js";
 import Ikon from "./components/Ikon.vue";
 import logo from "./assets/brand-mark.svg";
-import makanan from "./assets/food-bowl.svg";
-import roti from "./assets/food-bread.svg";
-import { buatDataLatihan, penyediaLatihan }
-  from "./data/penawaran-latihan.js";
-import { formatRupiah, tersedia } from "./lib/tampilan.js";
-
-const penawaran = ref(buatDataLatihan());
-const modeTampilan = ref("pembeli");
-const pencarian = ref("");
-const kategori = ref("");
-const pesan = ref("");
-const pilihanId = ref(null);
-const waktuSekarang = ref(Date.now());
+const router = useRouter();
+const route = useRoute();
 const konten = ref(null);
-const ringkasanPilihan = ref(null);
-let timer;
-let idBerikutnya = 7;
-
-onMounted(() => {
-  timer = setInterval(() => {
-    waktuSekarang.value = Date.now();
-  }, 1000);
-});
-
-onUnmounted(() => clearInterval(timer));
-
-const penawaranTersedia = computed(() =>
-  penawaran.value.filter((p) => tersedia(p, waktuSekarang.value)),
-);
-
-const daftarKategori = computed(() =>
-  [...new Set(penawaranTersedia.value.map((p) => p.kategori))].sort(),
-);
-
-const katalog = computed(() => {
-  const q = pencarian.value.trim().toLowerCase();
-
-  return penawaranTersedia.value.filter((p) =>
-    (!kategori.value || p.kategori === kategori.value) &&
-    `${p.nama} ${p.penyedia}`.toLowerCase().includes(q),
-  );
-});
-
-const milikRina = computed(() =>
-  penawaran.value.filter((p) => p.penyediaId === penyediaLatihan.id),
-);
-
-const milikTersedia = computed(() =>
-  milikRina.value.filter((p) => tersedia(p, waktuSekarang.value)),
-);
-
-const pilihan = computed(() =>
-  penawaranTersedia.value.find((p) => p.id === pilihanId.value) ?? null,
-);
-
-const jumlahUnit = computed(() =>
-  penawaranTersedia.value.reduce((jumlah, p) => jumlah + p.stok, 0),
-);
-
-const jumlahUnitMilik = computed(() =>
-  milikTersedia.value.reduce((jumlah, p) => jumlah + p.stok, 0),
-);
-
-const jumlahPenyedia = computed(() =>
-  new Set(penawaranTersedia.value.map((p) => p.penyediaId)).size,
-);
-
-function resetFilter() {
-  pencarian.value = "";
-  kategori.value = "";
+const menuTerbuka = ref(false);
+const pembukaMenu = ref(null);
+function tutupMenu() {
+  menuTerbuka.value = false;
+  pembukaMenu.value?.focus();
 }
-
-function ubahMode(nilai) {
-  modeTampilan.value = nilai;
-  pesan.value = "";
-}
-
-async function pilihPenawaran(id) {
-  if (!penawaranTersedia.value.some((p) => p.id === id)) return;
-
-  pilihanId.value = id;
-  pesan.value = "Pilihan Anda diperbarui.";
-
-  await nextTick();
-  ringkasanPilihan.value?.focus();
-}
-
-function tambahPenawaran(data) {
-  penawaran.value.unshift({
-    ...data,
-    id: String(idBerikutnya++),
-    penyediaId: penyediaLatihan.id,
-    penyedia: penyediaLatihan.nama,
-    dibuatPada: new Date().toISOString(),
-  });
-
-  pesan.value = "Penawaran ditambahkan ke daftar Anda.";
+watch(
+  () => route.fullPath,
+  async () => {
+    menuTerbuka.value = false;
+    await nextTick();
+    konten.value?.focus();
+  },
+);
+watch(
+  () => sesi.pengguna,
+  (p) => {
+    if (!p && route.meta.auth) router.replace("/login");
+  },
+);
+async function logout() {
+  if (sesi.keluar) return;
+  tandaiKeluar(true);
+  let pesan = "Anda telah keluar dari akun.";
+  try {
+    await api("/api/auth/logout", { method: "POST", auth: true, body: {} });
+  } catch (e) {
+    pesan =
+      e.status === 401
+        ? "Sesi sudah tidak berlaku. Silakan login lagi."
+        : "Sesi di perangkat ini telah ditutup.";
+  } finally {
+    hapusSesi(pesan);
+    tandaiKeluar(false);
+    await router.replace("/login");
+  }
 }
 </script>
-
 <template>
-  <a
-    class="lewati"
-    href="#konten"
-    @click.prevent="konten?.focus()"
+  <a class="lewati" href="#konten" @click.prevent="konten?.focus()"
+    >Lewati ke konten</a
   >
-    Lewati ke konten
-  </a>
-
   <header class="site-header">
     <div class="container header-inner">
-      <a
+      <RouterLink
         class="brand"
-        href="#konten"
-        @click="ubahMode('pembeli')"
+        to="/"
+        aria-label="SisaBaik — kembali ke katalog"
+        ><img :src="logo" width="42" height="42" alt="" /><span
+          >Sisa<span class="brand-accent">Baik</span
+          ><small>kesempatan kedua, kebaikan baru</small></span
+        ></RouterLink
       >
-        <img :src="logo" width="42" height="42" alt="" />
-
-        <span>
-          Sisa<span class="brand-accent">Baik</span>
-          <small>kesempatan kedua, kebaikan baru</small>
-        </span>
-      </a>
-
-      <div class="mode-control">
-        <label for="mode">Tampilan</label>
-
-        <select
-          id="mode"
-          v-model="modeTampilan"
-          @change="pesan = ''"
+      <button
+        ref="pembukaMenu"
+        class="menu-toggle button-quiet"
+        type="button"
+        :aria-expanded="menuTerbuka"
+        aria-controls="menu-utama"
+        @click="menuTerbuka = !menuTerbuka"
+      >
+        <Ikon :nama="menuTerbuka ? 'tutup' : 'menu'" /><span>{{
+          menuTerbuka ? "Tutup menu" : "Buka menu"
+        }}</span>
+      </button>
+      <nav
+        id="menu-utama"
+        class="menu"
+        :class="{ 'menu-open': menuTerbuka }"
+        aria-label="Navigasi utama"
+        @keydown.esc="tutupMenu"
+      >
+        <RouterLink to="/">Katalog</RouterLink>
+        <RouterLink
+          v-if="sesi.pengguna?.peran === 'penyedia'"
+          to="/akun/penyedia"
+          >Profil usaha</RouterLink
         >
-          <option value="pembeli">Pembeli</option>
-          <option value="penyedia">Penyedia Rina</option>
-        </select>
-      </div>
+        <RouterLink
+          v-if="
+            sesi.pengguna?.peran === 'penyedia' &&
+            sesi.pengguna.statusVerifikasi === 'terverifikasi'
+          "
+          to="/penyedia"
+          >Penawaran saya</RouterLink
+        >
+        <template v-if="sesi.pengguna">
+          <RouterLink
+            v-if="
+              sesi.pengguna.peran === 'pembeli' ||
+              sesi.pengguna.statusVerifikasi === 'terverifikasi'
+            "
+            to="/pesanan"
+            >Pesanan</RouterLink
+          ><RouterLink
+            v-if="
+              sesi.pengguna.peran === 'pembeli' ||
+              sesi.pengguna.statusVerifikasi === 'terverifikasi'
+            "
+            to="/dashboard"
+            >Dashboard</RouterLink
+          >
+          <div class="account-chip">
+            <span class="avatar" aria-hidden="true">{{
+              sesi.pengguna.namaLengkap?.slice(0, 1)
+            }}</span
+            ><span
+              >{{ sesi.pengguna.namaLengkap
+              }}<small>{{ sesi.pengguna.peran }}</small></span
+            >
+          </div>
+          <button
+            class="button-quiet logout-button"
+            type="button"
+            :disabled="sesi.keluar"
+            @click="logout"
+          >
+            <Ikon nama="keluar" />{{ sesi.keluar ? "Keluar…" : "Logout" }}
+          </button>
+        </template>
+        <template v-else>
+          <RouterLink class="button button-secondary button-small" to="/login"
+            ><Ikon nama="pengguna" />Login</RouterLink
+          >
+          <RouterLink class="button button-small" to="/daftar"
+            >Daftar</RouterLink
+          >
+        </template>
+      </nav>
     </div>
   </header>
-
-  <main
-    id="konten"
-    ref="konten"
-    tabindex="-1"
+  <div
+    v-if="sesi.pesan"
+    class="container session-message"
+    role="status"
+    aria-live="polite"
   >
-    <p
-      v-if="pesan"
-      class="container session-message"
-      role="status"
-      aria-live="polite"
-    >
-      <Ikon nama="cek" />{{ pesan }}
-    </p>
-
-    <template v-if="modeTampilan === 'pembeli'">
-      <section
-        class="hero"
-        aria-labelledby="judul-utama"
-      >
-        <div class="container hero-layout">
-          <div class="hero-copy">
-            <p class="eyebrow">
-              <span class="eyebrow-dot"></span>
-              Setiap porsi punya kesempatan kedua
-            </p>
-
-            <h1 id="judul-utama">
-              Makanan enak.<br />
-              <span>Harga lebih ramah.</span><br />
-              Dampak lebih baik.
-            </h1>
-
-            <p class="hero-lead">
-              Temukan makanan berlebih yang masih layak konsumsi.
-              Nikmati harga khusus atau penawaran gratis,
-              sambil memberi nilai baru pada stok yang tersedia.
-            </p>
-
-            <div class="button-group">
-              <a class="button" href="#katalog">
-                Jelajahi makanan
-                <Ikon nama="panah" />
-              </a>
-
-              <button
-                type="button"
-                class="button-secondary"
-                @click="ubahMode('penyedia')"
-              >
-                Saya punya usaha
-                <Ikon nama="toko" />
-              </button>
-            </div>
-
-            <div class="hero-values">
-              <span>
-                <Ikon nama="daun" />
-                Lebih sedikit terbuang
-              </span>
-
-              <span>
-                <Ikon nama="tas" />
-                Lebih banyak manfaat
-              </span>
-            </div>
-          </div>
-
-          <div class="hero-art">
-            <div class="hero-orbit"></div>
-
-            <img
-              class="hero-food"
-              :src="makanan"
-              width="640"
-              height="420"
-              alt="Ilustrasi sepiring makanan dengan nasi dan sayuran"
-              fetchpriority="high"
-            />
-
-            <div class="hero-art-note">
-              <span class="icon-tile">
-                <Ikon nama="daun" />
-              </span>
-
-              <div>
-                <strong>Masih layak. Masih bernilai.</strong>
-                <small>Kesempatan baik dimulai dari sini.</small>
-              </div>
-            </div>
-
-            <img
-              class="hero-bread"
-              :src="roti"
-              width="640"
-              height="420"
-              alt="Ilustrasi roti di atas papan kayu"
-            />
-
-            <span class="hero-art-label">
-              Ilustrasi menu
-            </span>
-          </div>
-        </div>
-      </section>
-
-      <section
-        id="katalog"
-        class="section container"
-        aria-labelledby="judul-katalog"
-      >
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">Kebaikan tersedia hari ini</p>
-
-            <h2 id="judul-katalog">
-              Temukan makanan pilihan Anda
-            </h2>
-
-            <p class="muted">
-              Pilih sesuai kebutuhan.
-            </p>
-          </div>
-
-          <div class="section-stats">
-            <span>{{ katalog.length }} penawaran</span>
-            <span>{{ jumlahUnit }} unit</span>
-            <span>{{ jumlahPenyedia }} penyedia</span>
-          </div>
-        </div>
-
-        <FilterPenawaran
-          :pencarian="pencarian"
-          :kategori="kategori"
-          :daftar-kategori="daftarKategori"
-          @ubah-pencarian="pencarian = $event"
-          @ubah-kategori="kategori = $event"
-          @reset="resetFilter"
-        />
-
-        <div
-          v-if="katalog.length"
-          class="offer-grid"
+    <Ikon nama="info" />{{ sesi.pesan }}
+  </div>
+  <main id="konten" ref="konten" tabindex="-1"><RouterView /></main>
+  <footer class="site-footer">
+    <div class="container footer-top">
+      <div class="footer-brand">
+        <RouterLink class="brand" to="/"
+          ><img :src="logo" width="42" height="42" alt="" /><span
+            >SisaBaik</span
+          ></RouterLink
         >
-          <KartuPenawaran
-            v-for="item in katalog"
-            :key="item.id"
-            :penawaran="item"
-            :waktu-sekarang="waktuSekarang"
-            :boleh-pilih="true"
-            @pilih="pilihPenawaran"
-          />
-        </div>
-
-        <div
-          v-else
-          class="empty-state"
+        <p>Makanan punya nilai.<br />Kebaikan punya kesempatan.</p>
+      </div>
+      <div>
+        <h2>Jelajahi SisaBaik</h2>
+        <RouterLink to="/">Katalog makanan</RouterLink
+        ><RouterLink
+          :to="
+            sesi.pengguna?.peran === 'penyedia'
+              ? '/akun/penyedia'
+              : '/daftar?peran=penyedia'
+          "
+          >Untuk penyedia</RouterLink
+        ><RouterLink :to="sesi.pengguna ? '/dashboard' : '/login'"
+          >Dashboard akun</RouterLink
         >
-          <h3>Tidak ada penawaran yang cocok</h3>
-          <p>
-            Coba ubah kata pencarian atau reset filter.
-          </p>
-        </div>
-
-        <div
-          v-if="pilihan"
-          ref="ringkasanPilihan"
-          tabindex="-1"
-          class="selection-summary"
-        >
-          <strong>Pilihan Anda</strong>
-          <span>{{ pilihan.nama }}</span>
-          <span>{{ formatRupiah(pilihan.hargaPenawaran) }}</span>
-        </div>
-      </section>
-    </template>
-
-    <template v-else>
-      <section class="section container">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">Ruang penyedia</p>
-
-            <h1>
-              Kelola penawaran {{ penyediaLatihan.nama }}
-            </h1>
-
-            <p class="muted">
-              Tambahkan penawaran latihan menggunakan formulir.
-            </p>
-          </div>
-
-          <div class="section-stats">
-            <span>{{ milikTersedia.length }} tersedia</span>
-            <span>{{ jumlahUnitMilik }} unit</span>
-          </div>
-        </div>
-
-        <div class="provider-layout">
-          <div>
-            <h2>Penawaran Anda</h2>
-
-            <div
-              v-if="milikRina.length"
-              class="offer-grid"
-            >
-              <KartuPenawaran
-                v-for="item in milikRina"
-                :key="item.id"
-                :penawaran="item"
-                :waktu-sekarang="waktuSekarang"
-              />
-            </div>
-
-            <p v-else class="empty-state">
-              Belum ada penawaran.
-            </p>
-          </div>
-
-          <div>
-            <h2>Tambah penawaran</h2>
-
-            <FormPenawaran @simpan="tambahPenawaran" />
-          </div>
-        </div>
-      </section>
-    </template>
-  </main>
+      </div>
+      <div class="footer-note">
+        <h2>Tujuan yang baik, informasi yang jelas</h2>
+        <p>
+          Menghubungkan makanan berlebih yang masih layak konsumsi dengan orang
+          yang membutuhkan, sekaligus memulihkan nilai stok usaha.
+        </p>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p>© 2026 SisaBaik</p>
+      <p>Kesempatan kedua untuk makanan yang masih bernilai.</p>
+    </div>
+  </footer>
 </template>

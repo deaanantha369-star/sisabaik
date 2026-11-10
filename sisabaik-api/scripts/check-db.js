@@ -13,10 +13,10 @@ if (!Number.isInteger(stokMinimum) || stokMinimum < 0) {
 
     const hasil = await pool.query(
       `SELECT p.id, p.nama, py.nama_usaha, p.stok, p.harga_penawaran
-FROM penawaran AS p
-JOIN penyedia AS py ON py.id = p.penyedia_id
-WHERE p.stok >= $1 AND p.status = $2
-ORDER BY p.id`,
+       FROM penawaran AS p
+       JOIN penyedia AS py ON py.id = p.penyedia_id
+       WHERE p.stok >= $1 AND p.status = $2
+       ORDER BY p.id`,
       [stokMinimum, "aktif"]
     );
 

@@ -1,4 +1,4 @@
-﻿export const penyediaLatihan = {
+export const penyediaLatihan = {
   id: "1",
   nama: "Lapau Uni Rina",
 };
@@ -6,7 +6,6 @@
 export function buatDataLatihan(waktu = Date.now()) {
   const jam = 60 * 60 * 1000;
   const dibuatPada = new Date(waktu).toISOString();
-
   const buat = (
     id,
     penyediaId,
@@ -33,7 +32,6 @@ export function buatDataLatihan(waktu = Date.now()) {
     berakhirPada: new Date(waktu + selisihJam * jam).toISOString(),
     dibuatPada,
   });
-
   return [
     buat(
       1,
