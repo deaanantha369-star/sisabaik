@@ -1,4 +1,4 @@
-// Membuat schema kosong untuk pendaftaran mandiri. Tidak menjalankan seed.
+﻿// Membuat schema kosong untuk pendaftaran mandiri. Tidak menjalankan seed.
 import { readFile } from "node:fs/promises";
 import { pool } from "../src/db/pool.js";
 import { transaksi } from "../src/db/transaksi.js";
@@ -37,10 +37,9 @@ try {
     .replace(/COMMIT;\s*$/, "");
   await transaksi(async (c) => {
     await c.query("SELECT pg_advisory_xact_lock(74091211)");
-    const r = await c.query(
-      "SELECT current_database() AS nama,(SELECT ssl FROM pg_stat_ssl WHERE pid=pg_backend_pid()) AS tls",
-    );
-    if (r.rows[0].nama !== tujuan || (cloud && !r.rows[0].tls))
+    const r = await c.query("SELECT current_database() AS nama");
+    const tlsAktif = Boolean(c.connection.stream.encrypted);
+    if (r.rows[0].nama !== tujuan || (cloud && !tlsAktif))
       throw new Error("Database tujuan atau TLS belum sesuai.");
     const cek = await c.query(
       "SELECT COUNT(*)::int AS jumlah FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'",
@@ -62,3 +61,4 @@ try {
 } finally {
   await pool.end();
 }
+
