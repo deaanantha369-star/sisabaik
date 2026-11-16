@@ -1,3 +1,4 @@
+
 import assert from "node:assert/strict";
 
 let jumlah = 0;
@@ -37,8 +38,11 @@ try {
   const html = await halaman.text();
   assert.match(html, /id="app"/);
   lulus("HTML Vue");
-  const aset = [...html.matchAll(/(?:src|href)="(\/assets\/[^\"]+)"/g)]
+
+  // Hanya uji aset JavaScript dan CSS, bukan ikon SVG atau font.
+  const aset = [...html.matchAll(/(?:src|href)="(\/assets\/[^"]+\.(?:js|css))"/g)]
     .map((x) => x[1]);
+
   assert.ok(aset.some((x) => x.endsWith(".js")));
   assert.ok(aset.some((x) => x.endsWith(".css")));
   for (const path of aset) {

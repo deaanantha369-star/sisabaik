@@ -45,3 +45,4 @@ CREATE INDEX IF NOT EXISTS idx_pesanan_penyedia_status
   ON pesanan (penyedia_id, status, id DESC);
 
 COMMIT;
+
